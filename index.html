@@ -1,14 +1,31 @@
 <html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <style> rect {fill: lightblue; stroke: black; }</style>
-<body>
-<svg width=300 height=300>
+<body onload='init()'>
+<svg width=500 height=500>
 </svg>
 <script>
+
+async function init() {
 var data = [4,8,15,16,23,42];
-var width = d3.scaleBand().domain([0,1,2,3,4,5]).range([0,200])
-var height = d3.scaleLinear().domain([0,42]).range([200,0])
+var dd = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
+
+var ticks = dd.columns;
+ticks.shift();
+ticks.shift();
+ticks.shift();
+ticks.shift();
+ticks.pop();
+ticks.pop();
+ticks.pop();
+ticks.pop();
+ticks.pop();
+console.log(dd)
+var range = 400
 var margin = 50
+var T1 = range + margin
+var width = d3.scaleBand().domain(ticks).range([0,range])
+var height = d3.scaleLinear().domain([0,1300]).range([range,0])
 
 var svg=d3.select("svg")
 .append("g")
@@ -21,22 +38,22 @@ svg.selectAll(".bar")
 .attr("x", function(d,i){return width(i);}) 
 .attr("y", function (d) {return height(d);}) 
 .attr("width", width.bandwidth())
-.attr("height", function(d){return 200-height(d);});
+.attr("height", function(d){return range-height(d);});
 
 d3.select("svg").append("g")
-.attr("transform", "translate("+50+","+50+")")
+.attr("transform", "translate("+margin+","+margin+")")
 .attr("fill","none")
 .attr("font-size","10")
 .attr("font-family","sans-serif")
 .call(d3.axisLeft(height));
 
 d3.select("svg").append("g")
-.attr("transform", "translate("+50+","+250+")")
+.attr("transform", "translate("+margin+","+T1+")")
 .attr("fill","none")
 .attr("font-size","10")
 .attr("font-family","sans-serif")
 .call(d3.axisBottom(width));
-
+}
 </script>
 </body>
 </html>
