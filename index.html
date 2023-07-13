@@ -1,1 +1,45 @@
-Hello World
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> rect {fill: lightblue; stroke: black; }</style>
+<body>
+<svg width=300 height=300>
+</svg>
+<script>
+var data = [4,8,15,16,23,42];
+var width = d3.scaleBand().domain([0,1,2,3,4,5]).range([0,200])
+var height = d3.scaleLinear().domain([0,42]).range([200,0])
+var margin = 50
+
+var svg=d3.select("svg")
+.append("g")
+.attr("transform", "translate("+margin+","+margin+")");
+
+svg.selectAll(".bar") 
+.data(data) 
+.enter() 
+.append("rect") 
+.attr("x", function(d,i){return width(i);}) 
+.attr("y", function (d) {return height(d);}) 
+.attr("width", width.bandwidth())
+.attr("height", function(d){return 200-height(d);});
+
+d3.select("svg").append("g")
+.attr("transform", "translate("+50+","+50+")")
+.attr("fill","none")
+.attr("font-size","10")
+.attr("font-family","sans-serif")
+.call(d3.axisLeft(height));
+
+d3.select("svg").append("g")
+.attr("transform", "translate("+50+","+250+")")
+.attr("fill","none")
+.attr("font-size","10")
+.attr("font-family","sans-serif")
+.call(d3.axisBottom(width));
+
+</script>
+</body>
+</html>
+
+
+
