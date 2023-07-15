@@ -1,62 +1,163 @@
 <html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
-<style> rect {fill: lightblue; stroke: black; }</style>
+<style>  rect {fill: lightblue; stroke: black; } 
+.btnC {
+  border: 1;
+  background-color: inherit;
+  padding: 1px 50px;
+  font-size: 15px;
+  cursor: default;
+  display: inline-block;
+}
+#tooltipId {
+  opacity: 0;
+  position: absolute;
+  text-align: center;
+  width: 62px; height:60px;
+  background: white;
+  border: 2px;
+}
+</style>
 <body onload='init()'>
-<svg width=500 height=500>
-</svg>
+<svg id="svgId" width=1200 height=550 style="border:1px solid black"></svg>
+<div id="tooltipId"></div>
+<div>
+    <button onclick="PreviousFun()">Previous</button>
+	<button id="PageDisplayId" class="btnC">1</button>
+    <button onclick="NextFun()">Next</button>
+ </div>
 <script>
-
+var dd, dd1, ticks, tooltip;
+var totalSum=[]; 
 async function init() {
-var data = [4,8,15,16,23,42];
-var dd = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
+dd = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
+dd1 = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
+tooltip=d3.select("#tooltipId");
 
-var ticks = dd.columns;
+ticks = dd.columns;
+ticks.pop();
+ticks.pop();
+ticks.pop();
+ticks.pop();
+ticks.pop();
 ticks.shift();
 ticks.shift();
 ticks.shift();
 ticks.shift();
-ticks.pop();
-ticks.pop();
-ticks.pop();
-ticks.pop();
-ticks.pop();
-console.log(dd)
-var range = 400
-var margin = 50
-var T1 = range + margin
-var width = d3.scaleBand().domain(ticks).range([0,range])
-var height = d3.scaleLinear().domain([0,1300]).range([range,0])
+firstPage();
+}
+
+function firstPage() {
+   
+ticks.forEach(function(t, i) {
+	totalSum[i]=d3.sum(dd.map(function(d){ return d[t]}));
+});
+
+var h = 550
+var w = 1200
+var Xmargin = 50
+var Ymargin = 70
+var XplotRange = w-Xmargin
+var YplotRange = h-Ymargin
+var width = d3.scaleBand().domain(d3.range(ticks[0], parseInt(ticks[ticks.length-1])+2)).range([0,XplotRange-10]).padding(0.1)
+var height = d3.scaleLinear().domain([0,1350]).range([YplotRange,10])
 
 var svg=d3.select("svg")
 .append("g")
-.attr("transform", "translate("+margin+","+margin+")");
-
+.attr("transform", "translate("+Xmargin+","+0+")");
+				
 svg.selectAll(".bar") 
-.data(data) 
+.data(totalSum) 
 .enter() 
 .append("rect") 
-.attr("x", function(d,i){return width(i);}) 
+.attr("x", function(d,i){return width(1960+i);}) 
 .attr("y", function (d) {return height(d);}) 
 .attr("width", width.bandwidth())
-.attr("height", function(d){return range-height(d);});
+.attr("height", function(d){return YplotRange-height(d);})
+.on("mouseover", function(d,i){
+	tooltip.style("opacity", 1)
+		.style("position", "absolute")
+		.style("left", (d3.event.pageX)+"px")
+		.style("top", (d3.event.pageY)+"px")
+		.html("CO2 emissions\n"+Math.round(d));
+	
+	d3.select(this).style("fill", "grey");
+})
+.on("mouseout", function(){
+	tooltip.style("opacity", 0) 
+	d3.select(this).style("fill", "lightblue");
+})
 
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (10+YplotRange+Ymargin/2) + ")")
+   .style("text-anchor", "middle")
+   .text("Year");
+
+svg.append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("x", -(h/2))
+   .attr("y", -(Ymargin/2))
+   .style("text-anchor", "middle")
+   .text("CO2 emissions (metric tons per capita)");
+   
 d3.select("svg").append("g")
-.attr("transform", "translate("+margin+","+margin+")")
+.attr("transform", "translate("+Xmargin+","+0+")")
 .attr("fill","none")
 .attr("font-size","10")
 .attr("font-family","sans-serif")
-.call(d3.axisLeft(height));
+.call(d3.axisLeft(height))
 
 d3.select("svg").append("g")
-.attr("transform", "translate("+margin+","+T1+")")
+.attr("transform", "translate("+Xmargin+","+YplotRange+")")
 .attr("fill","none")
-.attr("font-size","10")
+.attr("font-size","25")
 .attr("font-family","sans-serif")
-.call(d3.axisBottom(width));
+.call(d3.axisBottom(width))
+.selectAll("text")
+.attr("y", 0)
+.attr("x", 20)
+.attr("transform", "rotate(80)")
+}
+
+function secondPage() {
+document.getElementById("svgId").innerHTML = " "
+}
+
+function thirdPage() {
+document.getElementById("svgId").innerHTML = " "
+}
+
+var CurrentPage=1
+function PreviousFun() {
+	if(CurrentPage >= 2){
+		--CurrentPage;
+		if(CurrentPage == 1){
+			firstPage();
+		}
+		else if(CurrentPage == 2){
+			secondPage();
+		}
+		else{
+			thirdPage();
+		}	
+		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+	}
+}
+function NextFun() {
+	if(CurrentPage <= 2){
+		++CurrentPage;
+		if(CurrentPage == 1){
+			firstPage();
+		}
+		else if(CurrentPage == 2){
+			secondPage();
+		}
+		else{
+			thirdPage();
+		}
+		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+	}
 }
 </script>
 </body>
 </html>
-
-
-
