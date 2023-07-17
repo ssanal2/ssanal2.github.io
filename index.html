@@ -1,6 +1,6 @@
 <html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
-<style>  rect {fill: lightblue; stroke: black; } 
+<style>
 .btnC {
   border: 1;
   background-color: inherit;
@@ -13,123 +13,313 @@
   opacity: 0;
   position: absolute;
   text-align: center;
-  width: 62px; height:60px;
+  width: 85px; height:35px;
   background: white;
   border: 2px;
 }
 </style>
 <body onload='init()'>
-<svg id="svgId" width=1200 height=550 style="border:1px solid black"></svg>
+<svg id="svgId" width=1200 height=750 style="border:1px solid black"></svg>
 <div id="tooltipId"></div>
 <div>
     <button onclick="PreviousFun()">Previous</button>
-	<button id="PageDisplayId" class="btnC">1</button>
     <button onclick="NextFun()">Next</button>
+	<button id="PageDisplayId" class="btnC">1</button>
  </div>
 <script>
-var dd, dd1, ticks, tooltip;
-var totalSum=[]; 
-async function init() {
-dd = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
-dd1 = await d3.csv("https://ssanal2.github.io/CountrywiseAirPollution.csv");
-tooltip=d3.select("#tooltipId");
+var svg, dd, ticks, tooltip, h , w, Xmargin, Ymargin, XplotRange, YplotRange, maxEmission, XAxisScale, YAxisScale;
+var catagory = "Farm"
+var color = "green"
+var YMargin1 = 60
+var PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+var PreHeight2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
 
-ticks = dd.columns;
-ticks.pop();
-ticks.pop();
-ticks.pop();
-ticks.pop();
-ticks.pop();
-ticks.shift();
-ticks.shift();
-ticks.shift();
-ticks.shift();
+async function init() {
+dd = await d3.csv("https://ssanal2.github.io/Food_Production.csv");
+console.log(dd)
+h = 750
+w = 1200
+Xmargin = 60
+Ymargin = 60
+XplotRange = w-2*Xmargin
+YplotRange = h-2*Ymargin
+maxEmission = 65
+YMargin1 = 60
+
+tooltip=d3.select("#tooltipId");
+ticks = dd.map(function(d,i){return d["Food product"];});
+XAxisScale = d3.scaleBand().domain(ticks).range([0, XplotRange-10]).padding(0.1)
+YAxisScale = d3.scaleLinear().domain([0, 100]).range([YplotRange, YMargin1])
+	
 firstPage();
 }
 
 function firstPage() {
-   
-ticks.forEach(function(t, i) {
-	totalSum[i]=d3.sum(dd.map(function(d){ return d[t]}));
-});
+var width = d3.scaleBand().domain(ticks).range([0, XplotRange-10]).padding(0.1)
+var height = d3.scaleSqrt().domain([0, maxEmission]).range([YplotRange, Ymargin])
 
-var h = 550
-var w = 1200
-var Xmargin = 50
-var Ymargin = 70
-var XplotRange = w-Xmargin
-var YplotRange = h-Ymargin
-var width = d3.scaleBand().domain(d3.range(ticks[0], parseInt(ticks[ticks.length-1])+2)).range([0,XplotRange-10]).padding(0.1)
-var height = d3.scaleLinear().domain([0,1350]).range([YplotRange,10])
-
-var svg=d3.select("svg")
-.append("g")
-.attr("transform", "translate("+Xmargin+","+0+")");
-				
-svg.selectAll(".bar") 
-.data(totalSum) 
-.enter() 
-.append("rect") 
-.attr("x", function(d,i){return width(1960+i);}) 
-.attr("y", function (d) {return height(d);}) 
-.attr("width", width.bandwidth())
-.attr("height", function(d){return YplotRange-height(d);})
-.on("mouseover", function(d,i){
-	tooltip.style("opacity", 1)
-		.style("position", "absolute")
-		.style("left", (d3.event.pageX)+"px")
-		.style("top", (d3.event.pageY)+"px")
-		.html("CO2 emissions\n"+Math.round(d));
+svg=d3.select("svg")
+	.append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")");
 	
-	d3.select(this).style("fill", "grey");
-})
-.on("mouseout", function(){
-	tooltip.style("opacity", 0) 
-	d3.select(this).style("fill", "lightblue");
-})
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect") 
+	.attr("x", function(d,i){return width(d["Food product"]);}) 
+	.attr("y", function (d) {return height(d["Total_emissions"]);}) 
+	.attr("width", width.bandwidth())
+	.attr("height", function(d){return YplotRange-height(d["Total_emissions"]);})
+	.attr("fill", "lightblue")
+	.attr("stroke", "black") 
+	.on("mouseover", function(d,i){
+		tooltip.style("opacity", 1)
+			.style("position", "absolute")
+			.style("left", (d3.event.pageX)+"px")
+			.style("top", (d3.event.pageY)+"px")
+			.html("Emmission\n"+Math.round(d["Total_emissions"]*100)/100);
+		
+		d3.select(this).style("fill", "grey");
+	})
+	.on("mouseout", function(){
+		tooltip.style("opacity", 0) 
+		d3.select(this).style("fill", "lightblue");
+	})
 
 svg.append("text")
-   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (10+YplotRange+Ymargin/2) + ")")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
    .style("text-anchor", "middle")
-   .text("Year");
+   .attr("font-size","20")
+   .text("Food product");
 
 svg.append("text")
    .attr("transform", "rotate(-90)")
-   .attr("x", -(h/2))
-   .attr("y", -(Ymargin/2))
+   .attr("x", -(YplotRange/2))
+   .attr("y", -(Xmargin/2))
    .style("text-anchor", "middle")
-   .text("CO2 emissions (metric tons per capita)");
+   .attr("font-size","20")
+   .text("Greenhouse emmisions(Kg CO2 - equivalents per kg product)");
+   
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + 20 + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Environment Impact of different food Production processes (Total Emission)");   
+   
    
 d3.select("svg").append("g")
-.attr("transform", "translate("+Xmargin+","+0+")")
-.attr("fill","none")
-.attr("font-size","10")
-.attr("font-family","sans-serif")
-.call(d3.axisLeft(height))
+	.attr("transform", "translate("+Xmargin+","+0+")")
+	.attr("fill","none")
+	.attr("font-size","10")
+	.attr("font-family","sans-serif")
+	.call(d3.axisLeft(height))
 
 d3.select("svg").append("g")
-.attr("transform", "translate("+Xmargin+","+YplotRange+")")
-.attr("fill","none")
-.attr("font-size","25")
-.attr("font-family","sans-serif")
-.call(d3.axisBottom(width))
-.selectAll("text")
-.attr("y", 0)
-.attr("x", 20)
-.attr("transform", "rotate(80)")
+	.attr("transform", "translate("+Xmargin+","+YplotRange+")")
+	.attr("fill","none")
+	.attr("font-size","25")
+	.attr("font-family","sans-serif")
+	.style("text-anchor", "start")
+	.call(d3.axisBottom(width))
+	.selectAll("text")
+	.attr("y", 0)
+	.attr("x", 10)
+	.attr("transform", "rotate(80)")
 }
 
 function secondPage() {
-document.getElementById("svgId").innerHTML = " "
+
+var YMargin1 = 60
+var XAxisScale = d3.scaleBand().domain(ticks).range([0, XplotRange-10]).padding(0.1)
+var YAxisScale = d3.scaleLinear().domain([0, 100]).range([YplotRange, YMargin1])
+
+svg=d3.select("svg")
+	.append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")");
+	
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect") 
+	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return height1(d["Total_emissions"]);}) 
+	.attr("width", XAxisScale.bandwidth())
+	.attr("fill", "lightblue")
+	.attr("stroke", "black") 
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d["Total_emissions"]);})
+		
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect") 
+	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return height1(d[catagory]);}) 
+	.attr("width", XAxisScale.bandwidth())
+	.attr("fill", color)
+	.attr("stroke", "black") 
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d[catagory]);})
+	.on("mouseover", function(d,i){
+		tooltip.style("opacity", 1)
+			.style("position", "absolute")
+			.style("left", (d3.event.pageX)+"px")
+			.style("top", (d3.event.pageY)+"px")
+			.html("Emmission\n"+Math.round((d[catagory]/d["Total_emissions"])*100) + "%");
+		
+		d3.select(this).style("fill", "grey");
+	})
+	.on("mouseout", function(){
+		tooltip.style("opacity", 0) 
+		d3.select(this).style("fill", color);
+	})
+		
+	
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Food product");
+
+svg.append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("x", -(YplotRange/2))
+   .attr("y", -(Xmargin/2))
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("CO2 Emission in percentage (%)"); 
+   
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")")
+	.attr("fill","none")
+	.attr("font-size","10")
+	.attr("font-family","sans-serif")
+	.call(d3.axisLeft(YAxisScale))
+
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+YplotRange+")")
+	.attr("fill","none")
+	.attr("font-size","25")
+	.attr("font-family","sans-serif")
+	.style("text-anchor", "start")
+	.call(d3.axisBottom(XAxisScale))
+	.selectAll("text")
+	.attr("y", 0)
+	.attr("x", 10)
+	.attr("transform", "rotate(80)")
+	
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (20) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Cotribution of " +catagory+"ing on Environment");  
 }
 
 function thirdPage() {
-document.getElementById("svgId").innerHTML = " "
+
+svg=d3.select("svg")
+	.append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")");
+
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect") 
+	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return height1(d["Total_emissions"]);}) 
+	.attr("width", XAxisScale.bandwidth())
+	.attr("fill", "lightblue")
+	.attr("stroke", "black") 
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d["Total_emissions"]);})
+
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Food product");
+
+svg.append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("x", -(YplotRange/2))
+   .attr("y", -(Xmargin/2))
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("CO2 Emission in percentage (%)"); 
+   
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")")
+	.attr("fill","none")
+	.attr("font-size","10")
+	.attr("font-family","sans-serif")
+	.call(d3.axisLeft(YAxisScale))
+
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+YplotRange+")")
+	.attr("fill","none")
+	.attr("font-size","25")
+	.attr("font-family","sans-serif")
+	.style("text-anchor", "start")
+	.call(d3.axisBottom(XAxisScale))
+	.selectAll("text")
+	.attr("y", 0)
+	.attr("x", 10)
+	.attr("transform", "rotate(80)")
+	
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (20) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Environment Impact of different catagories of food Production processes");
+   
+getPerticualrCo2(catagory, color, 0)
+getPerticualrCo2("Transport", "royalblue", 1)
+getPerticualrCo2("Retail", "orange", 1)
+getPerticualrCo2("Processing", "darkcyan", 1)
+getPerticualrCo2("Land use change", "darkgoldenrod", 1)
+getPerticualrCo2("Packging", "orchid", 1)
+getPerticualrCo2("Animal Feed", "yellow", 1)
 }
 
-var CurrentPage=1
+function getPerticualrCo2(catagory, color, doubleOffset){
+var index = 0
+var index2 = 0
+
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect") 
+	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		//console.log("Test | "+d["Total_emissions"] + " | " + d[catagory] + " | "+ (YplotRange - height1(d[catagory])))
+		var tmp = height1(d[catagory]) + PreHeight[index] - (doubleOffset*YplotRange)
+		PreHeight[index] = tmp
+		++index;		
+		return tmp;}) 
+	.attr("width", XAxisScale.bandwidth())
+	.attr("fill", color)
+	.attr("stroke", "black") 
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d[catagory]);})
+//console.log("Next")		
+}
+
+var CurrentPage=1;
 function PreviousFun() {
+console.log("PreviousFun");
 	if(CurrentPage >= 2){
+		document.getElementById("svgId").innerHTML = " "
 		--CurrentPage;
 		if(CurrentPage == 1){
 			firstPage();
@@ -139,12 +329,14 @@ function PreviousFun() {
 		}
 		else{
 			thirdPage();
-		}	
+		}		
 		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
 	}
 }
 function NextFun() {
+console.log("NextFun");
 	if(CurrentPage <= 2){
+		document.getElementById("svgId").innerHTML = " "
 		++CurrentPage;
 		if(CurrentPage == 1){
 			firstPage();
