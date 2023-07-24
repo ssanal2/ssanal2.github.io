@@ -21,7 +21,7 @@
 </style>
 <body onload='init()'>
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-<svg id="svgId" width=1200 height=750 style="border:1px solid black"></svg>
+<svg id="svgId" width=1200 height=600 style="border:1px solid black"></svg>
 <div id="tooltipId"></div>
 
 <input type="radio" id="OverallPecentage" name="OverallPecentage" value="1" checked style="position:absolute; left:1210; top:80; opacity: 0;" onclick="OverallPecentage()"/>
@@ -221,7 +221,7 @@ async function init() {
 dd = await d3.csv("https://ssanal2.github.io/Food_Production.csv");
 console.log(dd);
 
-h = 750
+h = 600
 w = 1200
 Xmargin = 60
 Ymargin = 60
@@ -282,7 +282,7 @@ svg.append("text")
    .attr("y", -(Xmargin/2))
    .style("text-anchor", "middle")
    .attr("font-size","20")
-   .text("Greenhouse emmisions(Kg CO2 - equivalents per kg product)");
+   .text("Greenhouse emmisions[Kg CO2equivalents per kg product]");
    
 svg.append("text")
    .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + 20 + ")")
@@ -513,6 +513,19 @@ svg.selectAll(".bar")
 	.attr("height", function(d){
 		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
 		return YplotRange-height1(d[catagory]);})
+	.on("mouseover", function(d,i){
+		tooltip.style("opacity", 1)
+			.style("position", "absolute")
+			.style("left", (d3.event.pageX)+"px")
+			.style("top", (d3.event.pageY)+"px")
+			.html(catagory + "<br/>" +Math.round((d[catagory]/d["Total_emissions"])*100) +"%");
+		
+		d3.select(this).style("fill", "grey");
+	})
+	.on("mouseout", function(){
+		tooltip.style("opacity", 0) 
+		d3.select(this).style("fill", color);
+	})		
 }
 
 var CurrentPage=1;
@@ -522,6 +535,7 @@ function PreviousFun() {
 		--CurrentPage;
 		if(CurrentPage == 1){
 			d3.select("fieldset").style("opacity", 0)
+			d3.select("#fieldset2").style("opacity", 0)
 			d3.select("#OverallPecentage").style("opacity", 0)
 			d3.select("#OverallPecentageText").style("opacity", 0)
 			d3.select("#ComapreTwo").style("opacity", 0)
@@ -530,6 +544,7 @@ function PreviousFun() {
 		}
 		else if(CurrentPage == 2){
 			d3.select("fieldset").style("opacity", 0)
+			d3.select("#fieldset2").style("opacity", 0)
 			d3.select("#OverallPecentage").style("opacity", 0)
 			d3.select("#OverallPecentageText").style("opacity", 0)
 			d3.select("#ComapreTwo").style("opacity", 0)
@@ -555,6 +570,7 @@ function NextFun() {
 		++CurrentPage;
 		if(CurrentPage == 1){
 			d3.select("fieldset").style("opacity", 0)
+			d3.select("#fieldset2").style("opacity", 0)
 			d3.select("#OverallPecentage").style("opacity", 0)
 			d3.select("#OverallPecentageText").style("opacity", 0)
 			d3.select("#ComapreTwo").style("opacity", 0)
@@ -563,6 +579,7 @@ function NextFun() {
 		}
 		else if(CurrentPage == 2){
 			d3.select("fieldset").style("opacity", 0)
+			d3.select("#fieldset2").style("opacity", 0)
 			d3.select("#OverallPecentage").style("opacity", 0)
 			d3.select("#OverallPecentageText").style("opacity", 0)
 			d3.select("#ComapreTwo").style("opacity", 0)
@@ -608,6 +625,19 @@ svg.selectAll(".bar")
 	.attr("height", function(d){
 		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
 		return YplotRange-height1(d[catagory]);})
+	.on("mouseover", function(d,i){
+		tooltip.style("opacity", 1)
+			.style("position", "absolute")
+			.style("left", (d3.event.pageX)+"px")
+			.style("top", (d3.event.pageY)+"px")
+			.html(catagory + " of "+d["Food product"]+ "<br/>" +Math.round((d[catagory]/d["Total_emissions"])*100) + "%");
+		
+		d3.select(this).style("fill", "grey");
+	})
+	.on("mouseout", function(){
+		tooltip.style("opacity", 0) 
+		d3.select(this).style("fill", color);
+	})			
 }
 function checkboxFarm(){
 	
