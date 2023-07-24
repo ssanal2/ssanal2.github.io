@@ -13,30 +13,214 @@
   opacity: 0;
   position: absolute;
   text-align: center;
-  width: 85px; height:35px;
+  width: 85px; height:55px;
   background: white;
-  border: 2px;
+  border: 1px solid black;
+  pointer-events: none;
 }
 </style>
 <body onload='init()'>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 <svg id="svgId" width=1200 height=750 style="border:1px solid black"></svg>
 <div id="tooltipId"></div>
+
+<input type="radio" id="OverallPecentage" name="OverallPecentage" value="1" checked style="position:absolute; left:1210; top:80; opacity: 0;" onclick="OverallPecentage()"/>
+<label for="OverallPecentage" id="OverallPecentageText" style="position:absolute; left:1240; top:80; opacity: 0;">Different Contributions</label>
+
+<fieldset id="fieldset1" style="width:165px; height:155px; position:absolute; left:1210; top:100; opacity: 0;">
+    <legend>Choose your options</legend>
+    <div>
+      <input type="checkbox" id="checkboxFarm" onclick="checkboxFarm()" name="Farm" checked>
+      <label for="scales">Farm</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:green;;stroke-width:1;stroke:black" />
+	  </svg>
+    </div>
+
+    <div>
+      <input type="checkbox" id="checkboxTransport" onclick="checkboxTransport()" name="Transport" checked>
+      <label for="Transport">Transport</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:royalblue;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+	<div>
+      <input type="checkbox" id="checkboxRetail" onclick="checkboxRetail()" name="Retail" Unchecked>
+      <label for="Retail">Retail</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:orange;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+	<div>
+      <input type="checkbox" id="checkboxProcessing" onclick="checkboxProcessing()" name="Processing" Unchecked>
+      <label for="Processing">Processing</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:darkcyan;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+    <div>
+      <input type="checkbox" id="checkboxLandUseChange" onclick="checkboxLandUseChange()" name="LandUseChange" Unchecked>
+      <label for="checkboxLandUseChange">Land use change</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:darkgoldenrod;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+
+    <div>
+      <input type="checkbox" id="checkboxPackging" onclick="checkboxPackging()" name="Packging" Unchecked>
+      <label for="Packging">Packging</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:orchid;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+
+	<div>
+      <input type="checkbox" id="checkboxAnimalFeed" onclick="checkboxAnimalFeed()" name="AnimalFeed" Unchecked>
+      <label for="checkboxAnimalFeed">Animal Feed</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:yellow;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+</fieldset>
+
+<input type="radio" id="ComapreTwo" name="ComapreTwo" value="This is" style="position:absolute; left:1210; top:380; opacity: 0;"  onclick="ComapreTwo()">
+<label for="ComapreTwo" id="ComapreTwoText" style="position:absolute; left:1240; top:380; opacity: 0;">Comapre Any Two</label>
+<fieldset  id="fieldset2" style="width:165px; height:155px; position:absolute; left:1210; top:400; opacity: 0;" disabled>
+    <legend>Compare any two</legend>
+
+    <div>
+      <input type="checkbox" id="checkboxFarm2" onclick="checkboxFarm2()" name="Farm2" checked>
+      <label for="Farm2">Farm</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:green;;stroke-width:1;stroke:black" />
+	  </svg>
+    </div>
+
+    <div>
+      <input type="checkbox" id="checkboxTransport2" onclick="checkboxTransport2()" name="Transport2" checked>
+      <label for="Transport2">Transport</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:royalblue;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+	<div>
+      <input type="checkbox" id="checkboxRetail2" onclick="checkboxRetail2()" name="Retail2" Unchecked>
+      <label for="Retail2">Retail</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:orange;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+	<div>
+      <input type="checkbox" id="checkboxProcessing2" onclick="checkboxProcessing2()" name="Processing2" Unchecked>
+      <label for="Processing2">Processing</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:darkcyan;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+	
+    <div>
+      <input type="checkbox" id="checkboxLandusechange2" onclick="checkboxLandUseChange2()" name="LandUseChange2" Unchecked>
+      <label for="LandUseChange2">Land use change</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:darkgoldenrod;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+
+    <div>
+      <input type="checkbox" id="checkboxPackging2" onclick="checkboxPackging2()" name="Packging2" Unchecked>
+      <label for="Packging2">Packging</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:orchid;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+
+	<div>
+      <input type="checkbox" id="checkboxAnimalFeed2" onclick="checkboxAnimalFeed2()" name="AnimalFeed2" Unchecked>
+      <label for="AnimalFeed2">Animal Feed</label>
+	  <svg width="25" height="15">
+		<rect width="25" height="15" style="fill:yellow;stroke-width:1;stroke:black" />
+	  </svg>	  
+    </div>
+</fieldset>
 <div>
     <button onclick="PreviousFun()">Previous</button>
     <button onclick="NextFun()">Next</button>
 	<button id="PageDisplayId" class="btnC">1</button>
- </div>
+</div>
 <script>
+
 var svg, dd, ticks, tooltip, h , w, Xmargin, Ymargin, XplotRange, YplotRange, maxEmission, XAxisScale, YAxisScale;
 var catagory = "Farm"
 var color = "green"
 var YMargin1 = 60
 var PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
-var PreHeight2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+var selectionList2 = new Map();
+var selectionList = new Map();
+
+selectionList.set("Farm", "green");
+selectionList.set("Transport", "royalblue");
+
+selectionList2.set("Farm", "green");
+selectionList2.set("Transport", "royalblue");
+var count =2
+
+const annotations = [
+  {
+    note: {
+      label: "Beef herd has the highest 59.6 Kg CO2 emission per Kg of meat produced",
+      title: "Highest CO2 Emission",
+	  wrap: 200,
+    },
+	color: "black",
+    x: 880,
+    y: 85,
+    dy: 100,
+    dx: -200,
+	connector: { end: "arrow" },
+  }
+]
+
+const annotations2 = [
+  {
+    note: {
+      label: "Only 66% of Total Emission",
+      title: "Farming contribution of Beef(herd)",
+	  wrap: 300,
+    },
+	color: "black",
+    x: 890,
+    y: 250,
+    dy: -200,
+    dx: 50,
+	connector: { end: "arrow" }
+  }
+]
+
+const annotations3 = [
+  {
+    note: {
+      label: "91% of CO2 Emission is contributed by Farming",
+      title: "Farming contribution of Nuts",
+	  wrap: 350,
+    },
+	color: "black",
+    x: 350,
+    y: 110,
+    dy: -60,
+    dx: -20,
+	connector: { end: "arrow" }
+  }
+]
 
 async function init() {
 dd = await d3.csv("https://ssanal2.github.io/Food_Production.csv");
-console.log(dd)
+console.log(dd);
+
 h = 750
 w = 1200
 Xmargin = 60
@@ -50,7 +234,7 @@ tooltip=d3.select("#tooltipId");
 ticks = dd.map(function(d,i){return d["Food product"];});
 XAxisScale = d3.scaleBand().domain(ticks).range([0, XplotRange-10]).padding(0.1)
 YAxisScale = d3.scaleLinear().domain([0, 100]).range([YplotRange, YMargin1])
-	
+
 firstPage();
 }
 
@@ -65,7 +249,7 @@ svg=d3.select("svg")
 svg.selectAll(".bar") 
 	.data(dd) 
 	.enter() 
-	.append("rect") 
+	.append("rect")//.transition().duration(3000) 
 	.attr("x", function(d,i){return width(d["Food product"]);}) 
 	.attr("y", function (d) {return height(d["Total_emissions"]);}) 
 	.attr("width", width.bandwidth())
@@ -77,7 +261,7 @@ svg.selectAll(".bar")
 			.style("position", "absolute")
 			.style("left", (d3.event.pageX)+"px")
 			.style("top", (d3.event.pageY)+"px")
-			.html("Emmission\n"+Math.round(d["Total_emissions"]*100)/100);
+			.html("Total Emmission"+ "<br/>" +Math.round(d["Total_emissions"]*100)/100);
 		
 		d3.select(this).style("fill", "grey");
 	})
@@ -125,14 +309,17 @@ d3.select("svg").append("g")
 	.attr("y", 0)
 	.attr("x", 10)
 	.attr("transform", "rotate(80)")
+	
+makeAnnotations = d3.annotation()
+	.annotations(annotations);
+
+d3.select("#svgId")
+  .append('g')
+     .attr('class', 'annotation-group')
+     .call(makeAnnotations)
 }
 
 function secondPage() {
-
-var YMargin1 = 60
-var XAxisScale = d3.scaleBand().domain(ticks).range([0, XplotRange-10]).padding(0.1)
-var YAxisScale = d3.scaleLinear().domain([0, 100]).range([YplotRange, YMargin1])
-
 svg=d3.select("svg")
 	.append("g")
 	.attr("transform", "translate("+Xmargin+","+0+")");
@@ -171,15 +358,14 @@ svg.selectAll(".bar")
 			.style("position", "absolute")
 			.style("left", (d3.event.pageX)+"px")
 			.style("top", (d3.event.pageY)+"px")
-			.html("Emmission\n"+Math.round((d[catagory]/d["Total_emissions"])*100) + "%");
+			.html(catagory + " Emmission"+ "<br/>" +Math.round((d[catagory]/d["Total_emissions"])*100) + "%");
 		
 		d3.select(this).style("fill", "grey");
 	})
 	.on("mouseout", function(){
 		tooltip.style("opacity", 0) 
 		d3.select(this).style("fill", color);
-	})
-		
+	})	
 	
 svg.append("text")
    .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
@@ -219,6 +405,22 @@ svg.append("text")
    .style("text-anchor", "middle")
    .attr("font-size","20")
    .text("Cotribution of " +catagory+"ing on Environment");  
+
+makeAnnotations = d3.annotation()
+	.annotations(annotations2);
+	
+d3.select("#svgId")
+  .append('g')
+     .attr('class', 'annotation-group')
+     .call(makeAnnotations) 
+
+makeAnnotations = d3.annotation()
+	.annotations(annotations3);
+	
+d3.select("#svgId")
+  .append('g')
+     .attr('class', 'annotation-group')
+     .call(makeAnnotations) 	 
 }
 
 function thirdPage() {
@@ -241,7 +443,7 @@ svg.selectAll(".bar")
 	.attr("height", function(d){
 		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
 		return YplotRange-height1(d["Total_emissions"]);})
-
+			
 svg.append("text")
    .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
    .style("text-anchor", "middle")
@@ -280,19 +482,234 @@ svg.append("text")
    .style("text-anchor", "middle")
    .attr("font-size","20")
    .text("Environment Impact of different catagories of food Production processes");
-   
-getPerticualrCo2(catagory, color, 0)
-getPerticualrCo2("Transport", "royalblue", 1)
-getPerticualrCo2("Retail", "orange", 1)
-getPerticualrCo2("Processing", "darkcyan", 1)
-getPerticualrCo2("Land use change", "darkgoldenrod", 1)
-getPerticualrCo2("Packging", "orchid", 1)
-getPerticualrCo2("Animal Feed", "yellow", 1)
+
+var offset = 0
+selectionList.forEach(function(item, key, mapObj){
+	//console.log(key.toString()+"|"+item.toString());
+	getPerticularCo2(key.toString(), item.toString(), offset);
+	offset = 1
+});
 }
 
-function getPerticualrCo2(catagory, color, doubleOffset){
+function getPerticularCo2(catagory, color, doubleOffset){
 var index = 0
-var index2 = 0
+
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect")
+	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		//console.log("Test | "+catagory + " | " + index + " | "+ YplotRange)
+		var tmp = height1(d[catagory]) + PreHeight[index] - (doubleOffset*YplotRange)
+		PreHeight[index] = tmp
+		++index;
+		//console.log("Next")			
+		return tmp;}) 
+	.attr("width", XAxisScale.bandwidth())
+	.attr("fill", color)
+	.attr("stroke", "black")
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d[catagory]);})
+}
+
+var CurrentPage=1;
+function PreviousFun() {
+	if(CurrentPage >= 2){
+		document.getElementById("svgId").innerHTML = " "
+		--CurrentPage;
+		if(CurrentPage == 1){
+			d3.select("fieldset").style("opacity", 0)
+			d3.select("#OverallPecentage").style("opacity", 0)
+			d3.select("#OverallPecentageText").style("opacity", 0)
+			d3.select("#ComapreTwo").style("opacity", 0)
+			d3.select("#ComapreTwoText").style("opacity", 0)
+			firstPage();
+		}
+		else if(CurrentPage == 2){
+			d3.select("fieldset").style("opacity", 0)
+			d3.select("#OverallPecentage").style("opacity", 0)
+			d3.select("#OverallPecentageText").style("opacity", 0)
+			d3.select("#ComapreTwo").style("opacity", 0)
+			d3.select("#ComapreTwoText").style("opacity", 0)			
+			secondPage();
+		}
+		else{
+			PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+			thirdPage();
+			d3.select("#fieldset").style("opacity", 1)
+			d3.select("#fieldset2").style("opacity", 1)
+			d3.select("#OverallPecentage").style("opacity", 1)
+			d3.select("#OverallPecentageText").style("opacity", 1)
+			d3.select("#ComapreTwo").style("opacity", 1)
+			d3.select("#ComapreTwoText").style("opacity", 1)				
+		}		
+		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+	}
+}
+function NextFun() {
+	if(CurrentPage <= 2){
+		document.getElementById("svgId").innerHTML = " "
+		++CurrentPage;
+		if(CurrentPage == 1){
+			d3.select("fieldset").style("opacity", 0)
+			d3.select("#OverallPecentage").style("opacity", 0)
+			d3.select("#OverallPecentageText").style("opacity", 0)
+			d3.select("#ComapreTwo").style("opacity", 0)
+			d3.select("#ComapreTwoText").style("opacity", 0)			
+			firstPage();
+		}
+		else if(CurrentPage == 2){
+			d3.select("fieldset").style("opacity", 0)
+			d3.select("#OverallPecentage").style("opacity", 0)
+			d3.select("#OverallPecentageText").style("opacity", 0)
+			d3.select("#ComapreTwo").style("opacity", 0)
+			d3.select("#ComapreTwoText").style("opacity", 0)			
+			secondPage();
+		}
+		else{
+			PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+			if(document.getElementById("OverallPecentage").checked){
+				thirdPage();
+			}
+			else
+			{
+				forthPage();
+			}
+			d3.select("#fieldset1").style("opacity", 1)
+			d3.select("#fieldset2").style("opacity", 1)
+			d3.select("#OverallPecentage").style("opacity", 1)
+			d3.select("#OverallPecentageText").style("opacity", 1)
+			d3.select("#ComapreTwo").style("opacity", 1)
+			d3.select("#ComapreTwoText").style("opacity", 1)			
+		}
+		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+	}
+}
+
+function getForthPagePerticularCo2(catagory, color, offset){
+var index = 0
+
+svg.selectAll(".bar") 
+	.data(dd) 
+	.enter() 
+	.append("rect")
+	.attr("x", function(d,i){return (XAxisScale(d["Food product"]) + (offset*XAxisScale.bandwidth()/2));}) 
+	.attr("y", function (d) {
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		//console.log("Test | "+catagory + " | " + index + " | "+ YplotRange)
+		//console.log("Next")			
+		return height1(d[catagory]);}) 
+	.attr("width", XAxisScale.bandwidth()/2)
+	.attr("fill", color)
+	.attr("stroke", "black")
+	.attr("height", function(d){
+		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
+		return YplotRange-height1(d[catagory]);})
+}
+function checkboxFarm(){
+	
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+
+	if(d3.select("#checkboxFarm").property("checked")){
+		selectionList.set("Farm", "green");
+	}
+	else{
+		selectionList.delete("Farm");
+	}
+	thirdPage();
+}
+
+function checkboxTransport(){
+
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+	
+	if(d3.select("#checkboxTransport").property("checked")){
+		selectionList.set("Transport", "royalblue");
+	}
+	else{
+		selectionList.delete("Transport");
+	}
+	thirdPage();
+}
+
+function checkboxRetail(){
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+	if(d3.select("#checkboxRetail").property("checked")){
+		selectionList.set("Retail", "orange");
+	}
+	else{
+		selectionList.delete("Retail");
+	}
+	thirdPage();
+}
+
+function checkboxProcessing(){
+
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+		
+	if(d3.select("#checkboxProcessing").property("checked")){
+		selectionList.set("Processing", "darkcyan");
+	}
+	else{
+		selectionList.delete("Processing");
+	}
+	thirdPage();
+}
+
+function checkboxLandUseChange(){
+
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+		
+	if(d3.select("#checkboxLandUseChange").property("checked")){
+		selectionList.set("Land use change", "darkgoldenrod");
+	}
+	else{
+		selectionList.delete("Land use change");	
+	}
+	thirdPage();
+}
+
+function checkboxPackging(){
+
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+	
+	if(d3.select("#checkboxPackging").property("checked")){
+		selectionList.set("Packging", "orchid");
+	}
+	else{
+		selectionList.delete("Packging");
+	}
+	thirdPage();
+}
+
+function checkboxAnimalFeed(){
+
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
+	
+	if(d3.select("#checkboxAnimalFeed").property("checked")){
+		selectionList.set("Animal Feed", "yellow");
+	}
+	else{
+		selectionList.delete("Animal Feed");
+	}
+	thirdPage();
+}
+
+function forthPage() {
+
+svg=d3.select("svg")
+	.append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")");
 
 svg.selectAll(".bar") 
 	.data(dd) 
@@ -301,53 +718,277 @@ svg.selectAll(".bar")
 	.attr("x", function(d,i){return XAxisScale(d["Food product"]);}) 
 	.attr("y", function (d) {
 		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
-		//console.log("Test | "+d["Total_emissions"] + " | " + d[catagory] + " | "+ (YplotRange - height1(d[catagory])))
-		var tmp = height1(d[catagory]) + PreHeight[index] - (doubleOffset*YplotRange)
-		PreHeight[index] = tmp
-		++index;		
-		return tmp;}) 
+		return height1(d["Total_emissions"]);}) 
 	.attr("width", XAxisScale.bandwidth())
-	.attr("fill", color)
+	.attr("fill", "lightblue")
 	.attr("stroke", "black") 
 	.attr("height", function(d){
 		var height1 = d3.scaleLinear().domain([0, d["Total_emissions"]]).range([YplotRange, YMargin1])
-		return YplotRange-height1(d[catagory]);})
-//console.log("Next")		
+		return YplotRange-height1(d["Total_emissions"]);})
+			
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (75+YplotRange+Ymargin/2) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Food product");
+
+svg.append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("x", -(YplotRange/2))
+   .attr("y", -(Xmargin/2))
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("CO2 Emission in percentage (%)"); 
+   
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+0+")")
+	.attr("fill","none")
+	.attr("font-size","10")
+	.attr("font-family","sans-serif")
+	.call(d3.axisLeft(YAxisScale))
+
+d3.select("svg").append("g")
+	.attr("transform", "translate("+Xmargin+","+YplotRange+")")
+	.attr("fill","none")
+	.attr("font-size","25")
+	.attr("font-family","sans-serif")
+	.style("text-anchor", "start")
+	.call(d3.axisBottom(XAxisScale))
+	.selectAll("text")
+	.attr("y", 0)
+	.attr("x", 10)
+	.attr("transform", "rotate(80)")
+	
+svg.append("text")
+   .attr("transform", "translate(" + ((XplotRange-Xmargin)/2) + " ," + (20) + ")")
+   .style("text-anchor", "middle")
+   .attr("font-size","20")
+   .text("Environment Impact of different catagories of food Production processes");
+
+var offset = 0
+selectionList2.forEach(function(item, key, mapObj){
+	//console.log(key.toString()+"|"+item.toString());
+	getForthPagePerticularCo2(key.toString(), item.toString(), offset);
+	offset = 1
+});
 }
 
-var CurrentPage=1;
-function PreviousFun() {
-console.log("PreviousFun");
-	if(CurrentPage >= 2){
+function disableAll(){
+	document.getElementById("checkboxFarm2").disabled = true;
+	document.getElementById("checkboxTransport2").disabled = true;
+	document.getElementById("checkboxRetail2").disabled = true;
+	document.getElementById("checkboxProcessing2").disabled = true;
+	document.getElementById("checkboxLandusechange2").disabled = true;
+	document.getElementById("checkboxPackging2").disabled = true;
+	document.getElementById("checkboxAnimalFeed2").disabled = true;
+}
+
+function enableAll(){
+	document.getElementById("checkboxFarm2").disabled = false;
+	document.getElementById("checkboxTransport2").disabled = false;
+	document.getElementById("checkboxRetail2").disabled = false;
+	document.getElementById("checkboxProcessing2").disabled = false;
+	document.getElementById("checkboxLandusechange2").disabled = false;
+	document.getElementById("checkboxPackging2").disabled = false;
+	document.getElementById("checkboxAnimalFeed2").disabled = false;
+}
+
+function enable(){
+	selectionList2.forEach(function(item, key, mapObj){
+		var tmp = "checkbox" + key.toString() + "2"
+		document.getElementById(tmp.replaceAll(" ", "")).disabled = false;
+	});
+}
+
+function checkboxFarm2(){
+
+	if(d3.select("#checkboxFarm2").property("checked") && (count < 2)){
 		document.getElementById("svgId").innerHTML = " "
-		--CurrentPage;
-		if(CurrentPage == 1){
-			firstPage();
-		}
-		else if(CurrentPage == 2){
-			secondPage();
-		}
-		else{
-			thirdPage();
-		}		
-		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+		selectionList2.set("Farm", "green");
+		count++;
+		forthPage();
+	}
+	else if( count > 1){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Farm");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}
+	else{
+		enableAll();
 	}
 }
-function NextFun() {
-console.log("NextFun");
-	if(CurrentPage <= 2){
+
+function checkboxTransport2(){
+
+
+	if(d3.select("#checkboxTransport2").property("checked") && (count < 2)){
 		document.getElementById("svgId").innerHTML = " "
-		++CurrentPage;
-		if(CurrentPage == 1){
-			firstPage();
-		}
-		else if(CurrentPage == 2){
-			secondPage();
-		}
-		else{
-			thirdPage();
-		}
-		document.getElementById("PageDisplayId").innerHTML = CurrentPage;
+		selectionList2.set("Transport", "royalblue");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Transport");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}
+	else{
+		enableAll();
+	}
+}
+
+function checkboxRetail2(){
+
+	if(d3.select("#checkboxRetail2").property("checked") && (count < 2)){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.set("Retail", "orange");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Retail");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}	
+	else{
+		enableAll();
+	}	
+}
+
+function checkboxProcessing2(){
+
+	if(d3.select("#checkboxProcessing2").property("checked") && (count < 2)){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.set("Processing", "darkcyan");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Processing");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}	
+	else{
+		enableAll();
+	}	
+}
+
+function checkboxLandUseChange2(){
+
+	if(d3.select("#checkboxLandUseChange2").property("checked") && (count < 2)){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.set("Land use change", "darkgoldenrod");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Land use change");
+		count--;
+		forthPage();		
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}
+	else{
+		enableAll();
+	}
+}
+
+function checkboxPackging2(){
+
+	if(d3.select("#checkboxPackging2").property("checked") && (count < 2)){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.set("Packging", "orchid");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Packging");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}
+	else{
+		enableAll();
+	}
+}
+
+function checkboxAnimalFeed2(){
+
+	if(d3.select("#checkboxAnimalFeed2").property("checked") && (count < 2)){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.set("Animal Feed", "yellow");
+		count++;
+		forthPage();
+	}
+	else if( count > 0){
+		document.getElementById("svgId").innerHTML = " "
+		selectionList2.delete("Animal Feed");
+		count--;
+		forthPage();
+	}
+	
+	if(count == 2){
+		disableAll();
+		enable();
+	}	
+	else{
+		enableAll();
+	}
+}
+
+function OverallPecentage(){
+	document.getElementById("svgId").innerHTML = " "
+	PreHeight = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+	document.getElementById("ComapreTwo").checked = false;
+	document.getElementById("fieldset2").disabled = true;
+	document.getElementById("fieldset1").disabled = false;
+	thirdPage();
+}
+function ComapreTwo(){
+	document.getElementById("svgId").innerHTML = " "
+	document.getElementById("OverallPecentage").checked = false;
+	document.getElementById("fieldset1").disabled = true;
+	document.getElementById("fieldset2").disabled = false;
+	forthPage();
+	if(count == 2){
+		disableAll();
+		enable();
+	}	
+	else{
+		enableAll();
 	}
 }
 </script>
